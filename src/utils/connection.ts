@@ -2,7 +2,7 @@ import mongoose = require("mongoose");
 
 class Connection {
 
-    dbURI = 'mongodb+srv://donald_vc:IcewefaGFr8if2g4@productivity.u6ozv.mongodb.net/app_productivity?retryWrites=true&w=majority';
+    dbURI = process.env.DB_URI;
 
     connect () {
         return new Promise(async (resolve, reject) => {
