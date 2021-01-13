@@ -25,7 +25,7 @@ class TaskController {
       const section: any = await Section.findById(data.section)
 
       if (section) {
-        const new_task = new Task(data);
+        const new_task = new Task({...data, time: data.estimated});
         const saved = await new_task.save();
 
         section.task_allowed.push(saved._id);
