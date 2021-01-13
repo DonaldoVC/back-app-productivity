@@ -49,7 +49,9 @@ class TaskController {
       const task: any = await Task.findById(idTask);
 
       if (task) {
+        task.time = data.time;
         task.status = data.status;
+
         const saved = await task.save();
 
         res.status(200).json(saved);
