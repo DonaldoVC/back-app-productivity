@@ -29,7 +29,12 @@ class TaskController {
       if (section) {
         const all_task: any = await Task.find({status: {$ne: 0}}).sort({order: -1});
 
-        const new_task = new Task({...data, time: data.estimated, order: !!all_task[0].order ? all_task[0].order + 1 : 1});
+        const new_task = new Task({
+          ...data,
+          time: data.estimated,
+          order: all_task.length ? all_task[0].order + 1 : 1
+        });
+
         const saved = await new_task.save();
 
         section.task_allowed.push(saved._id);
