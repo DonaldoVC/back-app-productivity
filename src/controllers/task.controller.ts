@@ -1,6 +1,8 @@
 import * as express from 'express';
 import {Section, Task} from '../models';
 
+import {multiple_task} from "../constants/task";
+
 class TaskController {
 
   public router: express.Router;
@@ -15,6 +17,7 @@ class TaskController {
     router.put('/change/:idTask', this.changeStatus);
     router.put('/reset/:idTask', this.reset);
     router.post('/order', this.order);
+    router.post('/graph', this.graph);
     router.delete('/:idTask', this.delete);
 
     this.router = router;
@@ -146,6 +149,34 @@ class TaskController {
       }
 
       res.status(200).json('Tareas actualizadas.');
+    } catch (e) {
+      res.status(500).json(e.message);
+    }
+  }
+
+  async graph(req: any, res: any) {
+    try {
+      for (const task of multiple_task) {
+        const section: any = await Section.findById(task.section)
+
+        if (section) {
+          const all_task: any = await Task.find({status: {$ne: 0}}).sort({order: -1});
+
+          const new_task = new Task({
+            ...task,
+            status: 2,
+            order: all_task.length ? all_task[0].order + 1 : 1
+          });
+
+          const saved = await new_task.save();
+
+          section.task_allowed.push(saved._id);
+
+          await section.save();
+        }
+      }
+
+      res.status(200).json('Tareas creadas.');
     } catch (e) {
       res.status(500).json(e.message);
     }
