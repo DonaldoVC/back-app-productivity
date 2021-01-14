@@ -141,7 +141,7 @@ class TaskController {
 
         if (taskEdit) {
           taskEdit.order = task.order;
-          await task.save();
+          await taskEdit.save();
         }
       }
 
