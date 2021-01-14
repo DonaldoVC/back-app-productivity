@@ -13,6 +13,8 @@ class TaskController {
     router.get('/:idTask', this.get);
     router.put('/:idTask', this.update);
     router.put('/change/:idTask', this.changeStatus);
+    router.put('/reset/:idTask', this.reset);
+    router.post('/order', this.order);
     router.delete('/:idTask', this.delete);
 
     this.router = router;
@@ -99,6 +101,46 @@ class TaskController {
       } else {
         throw ("Error, No fue posible actualizar la tarea.");
       }
+    } catch (e) {
+      res.status(500).json(e.message);
+    }
+  }
+
+  async reset(req: any, res: any) {
+    try {
+      const data: any = req.body.data;
+      const idTask: any = req.params.idTask;
+
+      const task: any = await Task.findById(idTask);
+
+      if (task) {
+        task.status = 1;
+        task.time = data.estimated;
+        const saved = await task.save();
+
+        res.status(200).json(saved);
+      } else {
+        throw ("Error, No fue reiniciar.");
+      }
+    } catch (e) {
+      res.status(500).json(e.message);
+    }
+  }
+
+  async order(req: any, res: any) {
+    try {
+      const data: any = req.body.data;
+
+      for (const task of data.task) {
+        const taskEdit: any = await Task.findById(task._id);
+
+        if (taskEdit) {
+          taskEdit.order = task.order;
+          await task.save();
+        }
+      }
+
+      res.status(200).json('Tareas actualizadas.');
     } catch (e) {
       res.status(500).json(e.message);
     }
