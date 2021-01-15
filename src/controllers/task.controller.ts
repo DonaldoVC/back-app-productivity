@@ -64,6 +64,10 @@ class TaskController {
         task.time = data.time;
         task.status = data.status;
 
+        if (data.status === 2) {
+          task.finishedDate = new Date();
+        }
+
         const saved = await task.save();
 
         res.status(200).json(saved);

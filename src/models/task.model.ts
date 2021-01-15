@@ -9,6 +9,7 @@ const taskSchema = new Schema({
   time: Number,
   order: Number,
   status: {type: Number, default: 1},
+  finishedDate: {type: Date, default: null},
   deletedAt: {type: Date, default: null}
 }, {timestamps: true});
 
